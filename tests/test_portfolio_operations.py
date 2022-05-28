@@ -125,5 +125,91 @@ class TestAddAsset(unittest.TestCase):
         self._check_add_asset_exception(test_asset, ValueError)
 
 
+class TestRemoveAsset(unittest.TestCase):
+    def setUp(self) -> None:
+        self.portfolio_controller = PortfolioController(Path("/"), "test")
+
+        # constants for test asset
+        self._TEST_ASSET_NAME = "testname"
+        self._TEST_ASSET_UNIT_PRICE = 100
+        self._TEST_ASSET_AMOUNT = 1000
+        self._TEST_ASSET_CURRENCY = "USD"
+
+        # create test asset inside portfolio
+        self._initialize_example_portfolio()
+
+        return super().setUp()
+
+    def _initialize_example_portfolio(self) -> None:
+        """Create portfolio with example asset"""
+
+        self.portfolio_controller._portfolio.assets[self._TEST_ASSET_NAME] = {
+            "unit_price": self._TEST_ASSET_UNIT_PRICE,
+            "amount": self._TEST_ASSET_AMOUNT,
+            "currency": self._TEST_ASSET_CURRENCY,
+        }
+
+    def _check_remove_asset_exception(self, name, amount, exception) -> None:
+        """Call remove_asset with provided arguments
+        and check if provided exception was raised
+        """
+
+        self.assertRaises(
+            exception, self.portfolio_controller.remove_asset, name, amount
+        )
+
+    def _check_remove_asset_valid(self, name, amount) -> None:
+        """Remove asset with provided arguments
+
+        If removed amount is less than current amount of asset
+        check if amount after removal is correct
+
+        else check if asset was removed from the portfolio
+        """
+
+        self.portfolio_controller.remove_asset(name, amount)
+        if amount < self._TEST_ASSET_AMOUNT:
+            self.assertEqual(
+                self.portfolio_controller._portfolio.assets[name]["amount"],
+                self._TEST_ASSET_AMOUNT - amount,
+            )
+        else:
+            self.assertNotIn(name, self.portfolio_controller._portfolio.assets)
+
+    def test_remove_nonexisting_asset(self) -> None:
+        """Test removing asset without name from portfolio.
+
+        Should raise ValueError
+        """
+
+        self._check_remove_asset_exception("", 10, ValueError)
+        self._initialize_example_portfolio()
+
+    def test_remove_negative_amount(self) -> None:
+        """Test negative amount of assets from portfolio.
+
+        Should raise ValueError
+        """
+
+        self._check_remove_asset_exception("testname", -10, ValueError)
+        self._initialize_example_portfolio()
+
+    def test_remove_not_all_assets(self) -> None:
+        """Test removing amount of asset less than current amount
+
+        Should decrease amount of asset"""
+
+        self._check_remove_asset_valid("testname", self._TEST_ASSET_AMOUNT - 1)
+        self._initialize_example_portfolio()
+
+    def test_remove_all_assets(self) -> None:
+        """Test removing whole amount of asset
+
+        Should remove asset from portfolio"""
+
+        self._check_remove_asset_valid("testname", self._TEST_ASSET_AMOUNT)
+        self._initialize_example_portfolio()
+
+
 if __name__ == "__main__":
     unittest.main()
