@@ -47,7 +47,7 @@ class TestAddAsset(unittest.TestCase):
         self.assertEqual(asset["amount"], test_asset["amount"])
         self.assertEqual(asset["currency"], test_asset["currency"])
 
-    def _check_add_raise_exception(
+    def _check_add_asset_exception(
         self, test_asset: Dict, exception: Exception
     ) -> None:
         """Check if portoflio add_asset raises provided exception,
@@ -88,7 +88,7 @@ class TestAddAsset(unittest.TestCase):
         test_asset = self.asset_template
         test_asset["name"] = ""
 
-        self._check_add_raise_exception(test_asset, ValueError)
+        self._check_add_asset_exception(test_asset, ValueError)
 
     def test_add_negative_unitprice(self) -> None:
         """Test portfolio controller add_asset function
@@ -100,7 +100,7 @@ class TestAddAsset(unittest.TestCase):
         test_asset = self.asset_template
         test_asset["unit_price"] = -1
 
-        self._check_add_raise_exception(test_asset, ValueError)
+        self._check_add_asset_exception(test_asset, ValueError)
 
     def test_add_negative_amount(self) -> None:
         """Test portfolio controller add_asset function
@@ -111,7 +111,7 @@ class TestAddAsset(unittest.TestCase):
 
         test_asset = self.asset_template
         test_asset["amount"] = -10
-        self._check_add_raise_exception(test_asset, ValueError)
+        self._check_add_asset_exception(test_asset, ValueError)
 
     def test_add_empty_currency(self) -> None:
         """Test portfolio controller add_asset function
@@ -122,7 +122,7 @@ class TestAddAsset(unittest.TestCase):
 
         test_asset = self.asset_template
         test_asset["currency"] = ""
-        self._check_add_raise_exception(test_asset, ValueError)
+        self._check_add_asset_exception(test_asset, ValueError)
 
 
 if __name__ == "__main__":
