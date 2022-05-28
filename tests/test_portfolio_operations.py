@@ -69,8 +69,7 @@ class TestAddAsset(unittest.TestCase):
         self.assertNotIn(test_asset["name"], assets.keys())
 
     def test_add_example(self) -> None:
-        """Test portfolio controller add_asset function
-        provided valid example arguments
+        """Add asset with valid input
 
         Should add an asset to portfolio with values provided in arguments.
         """
@@ -79,8 +78,7 @@ class TestAddAsset(unittest.TestCase):
         self._check_add_valid_asset(test_asset)
 
     def test_add_empty_name(self) -> None:
-        """Test portfolio controller add_asset function
-        provided with empty string as name argument
+        """Add asset provided with empty string as name
 
         Should raise ValueError
         """
@@ -91,8 +89,7 @@ class TestAddAsset(unittest.TestCase):
         self._check_add_asset_exception(test_asset, ValueError)
 
     def test_add_negative_unitprice(self) -> None:
-        """Test portfolio controller add_asset function
-        provided with empty string as unit price argument
+        """Add asset with negative unit price
 
         Should raise ValueError
         """
@@ -103,8 +100,7 @@ class TestAddAsset(unittest.TestCase):
         self._check_add_asset_exception(test_asset, ValueError)
 
     def test_add_negative_amount(self) -> None:
-        """Test portfolio controller add_asset function
-        provided with empty string as amount argument
+        """Add asset with negative amount
 
         Should raise ValueError
         """
@@ -114,8 +110,7 @@ class TestAddAsset(unittest.TestCase):
         self._check_add_asset_exception(test_asset, ValueError)
 
     def test_add_empty_currency(self) -> None:
-        """Test portfolio controller add_asset function
-        provided with empty string as currency argument
+        """Add asset with empty string as currency
 
         Should raise ValueError
         """
@@ -177,7 +172,7 @@ class TestRemoveAsset(unittest.TestCase):
             self.assertNotIn(name, self.portfolio_controller._portfolio.assets)
 
     def test_remove_nonexisting_asset(self) -> None:
-        """Test removing asset without name from portfolio.
+        """Remove asset which is not in portfolio.
 
         Should raise ValueError
         """
@@ -186,7 +181,7 @@ class TestRemoveAsset(unittest.TestCase):
         self._initialize_example_portfolio()
 
     def test_remove_negative_amount(self) -> None:
-        """Test negative amount of assets from portfolio.
+        """Remove negative amount of asset from portfolio.
 
         Should raise ValueError
         """
@@ -195,7 +190,7 @@ class TestRemoveAsset(unittest.TestCase):
         self._initialize_example_portfolio()
 
     def test_remove_not_all_assets(self) -> None:
-        """Test removing amount of asset less than current amount
+        """Remove some (not all) amount of asset from portfolio
 
         Should decrease amount of asset"""
 
@@ -203,7 +198,7 @@ class TestRemoveAsset(unittest.TestCase):
         self._initialize_example_portfolio()
 
     def test_remove_all_assets(self) -> None:
-        """Test removing whole amount of asset
+        """Remove whole (all) amount of asset from portfolio
 
         Should remove asset from portfolio"""
 
