@@ -544,5 +544,116 @@ class TestSellAsset(unittest.TestCase):
         self._clear_transactions()
 
 
+class TestTransactionsRecords(unittest.TestCase):
+    def setUp(self) -> None:
+        self.portfolio_controller = PortfolioController(Path("/"), "test")
+        return super().setUp()
+
+    def test_add_transaction_record(self) -> None:
+        """create simple transaction record
+
+        check for correct values with provided asset arguments"""
+
+        transaction_type = "BUY"
+        asset = {
+            "code": "test",
+            "unit_price": 10,
+            "amount": 200,
+            "currency": "USD",
+        }
+
+        self.portfolio_controller.add_transaction_record(
+            type=transaction_type,
+            code=asset["code"],
+            unit_price=asset["unit_price"],
+            amount=asset["amount"],
+            currency=asset["currency"],
+        )
+
+        # get the transaction record
+        transaction = self.portfolio_controller._portfolio._transactions[-1]
+
+        # check if transaction record is correct
+        self.assertEqual(transaction["type"], transaction_type)
+        self.assertEqual(transaction["code"], asset["code"])
+        self.assertEqual(transaction["unit_price"], asset["unit_price"])
+        self.assertEqual(transaction["amount"], asset["amount"])
+        self.assertEqual(transaction["currency"], asset["currency"])
+
+    def test_add_mult_transactions(self) -> None:
+        """create multiple transactions records
+
+        check for correct values with provided asset arguments"""
+
+        transaction_types = ("BUY", "SELL")
+
+        asset = {
+            "code": "test",
+            "unit_price": 10,
+            "amount": 200,
+            "currency": "USD",
+        }
+        self.portfolio_controller.add_transaction_record(
+            type=transaction_types[0],
+            code=asset["code"],
+            unit_price=asset["unit_price"],
+            amount=asset["amount"],
+            currency=asset["currency"],
+        )
+
+        self.portfolio_controller.add_transaction_record(
+            type=transaction_types[1],
+            code=asset["code"],
+            unit_price=asset["unit_price"],
+            amount=asset["amount"],
+            currency=asset["currency"],
+        )
+
+        # check the transaction records
+        t1 = self.portfolio_controller._portfolio._transactions[-1]
+        t2 = self.portfolio_controller._portfolio._transactions[-2]
+
+        self.assertEqual(t1["type"], transaction_types[1])
+        self.assertEqual(t1["code"], asset["code"])
+        self.assertEqual(t1["unit_price"], asset["unit_price"])
+        self.assertEqual(t1["amount"], asset["amount"])
+        self.assertEqual(t1["currency"], asset["currency"])
+
+        self.assertEqual(t2["type"], transaction_types[0])
+        self.assertEqual(t2["code"], asset["code"])
+        self.assertEqual(t2["unit_price"], asset["unit_price"])
+        self.assertEqual(t2["amount"], asset["amount"])
+        self.assertEqual(t2["currency"], asset["currency"])
+
+    def test_add_transaction_dates(self) -> None:
+        """create multiple transactions records and check for date order
+
+        subsequent transactions should have increasing dates"""
+
+        asset = {
+            "code": "test",
+            "unit_price": 10,
+            "amount": 200,
+            "currency": "USD",
+        }
+
+        for _ in range(50):
+            self.portfolio_controller.add_transaction_record(
+                type="test",
+                code=asset["code"],
+                unit_price=asset["unit_price"],
+                amount=asset["amount"],
+                currency=asset["currency"],
+            )
+
+        # check if older transactions have older dates
+        transactions = self.portfolio_controller._portfolio._transactions
+        print(transactions)
+        for i in range(len(transactions) - 1):
+            self.assertLessEqual(
+                transactions[i]["date"], transactions[i + 1]["date"]
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
