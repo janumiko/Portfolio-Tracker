@@ -338,5 +338,211 @@ class TestBuyAsset(unittest.TestCase):
         self._clear_transactions()
 
 
+class TestSellAsset(unittest.TestCase):
+    def setUp(self) -> None:
+        self.portfolio_controller = PortfolioController(Path("/"), "test")
+
+        # constants for test asset
+        self._TEST_ASSET_NAME = "testname"
+        self._TEST_ASSET_UNIT_PRICE = 100
+        self._TEST_ASSET_AMOUNT = 1000
+        self._TEST_ASSET_CURRENCY = "USD"
+
+        self._asset_template = {
+            "name": self._TEST_ASSET_NAME,
+            "unit_price": self._TEST_ASSET_UNIT_PRICE,
+            "amount": self._TEST_ASSET_AMOUNT,
+            "currency": self._TEST_ASSET_CURRENCY,
+        }
+
+        # create test asset inside portfolio
+        self._initialize_example_portfolio()
+
+        return super().setUp()
+
+    def _initialize_example_portfolio(self) -> None:
+        """Create portfolio with example asset"""
+
+        self.portfolio_controller._portfolio.assets[self._TEST_ASSET_NAME] = {
+            "unit_price": self._TEST_ASSET_UNIT_PRICE,
+            "amount": self._TEST_ASSET_AMOUNT,
+            "currency": self._TEST_ASSET_CURRENCY,
+        }
+
+    @property
+    def asset_template(self) -> Dict:
+        return self._asset_template.copy()
+
+    def _clear_transactions(self) -> None:
+        self.portfolio_controller._portfolio._transactions = []
+
+    def _check_sell_valid_asset(self, test_asset) -> None:
+        """Remove asset with provided arguments
+
+        If removed amount is less than current amount of asset
+        check if amount after removal is correct
+
+        else check if asset was removed from the portfolio
+
+        assert if transaction record was created
+        """
+
+        self.portfolio_controller.sell_asset(
+            test_asset["name"],
+            test_asset["unit_price"],
+            test_asset["amount"],
+            test_asset["currency"],
+        )
+
+        if test_asset["amount"] < self._TEST_ASSET_AMOUNT:
+            self.assertEqual(
+                self.portfolio_controller._portfolio.assets[
+                    test_asset["name"]
+                ]["amount"],
+                self._TEST_ASSET_AMOUNT - test_asset["amount"],
+            )
+        else:
+            self.assertNotIn(
+                test_asset["name"], self.portfolio_controller._portfolio.assets
+            )
+
+        self.assertEqual(
+            1, len(self.portfolio_controller._portfolio._transactions)
+        )
+
+    def _check_sell_asset_exception(
+        self, test_asset: Dict, exception: Exception
+    ) -> None:
+        """Check if portoflio sell asster function raises provided exception,
+        also check if asset is not added into portfolio assets
+        and transaction record was not created
+        """
+
+        self.assertRaises(
+            exception,
+            self.portfolio_controller.sell_asset,
+            test_asset["name"],
+            test_asset["unit_price"],
+            test_asset["amount"],
+            test_asset["currency"],
+        )
+
+        # check if transaction record was not created
+        self.assertEqual(
+            0, len(self.portfolio_controller._portfolio._transactions)
+        )
+
+    def test_sell_not_all(self) -> None:
+        """sell less than current amount of asset
+
+        should create an transaction record, and
+        remove amount of asset equal to provided amount in argument
+        """
+
+        test_asset = self.asset_template
+        test_asset["amount"] -= 1
+        self._check_sell_valid_asset(test_asset)
+
+        # reset portfolio to starting state
+        self._initialize_example_portfolio()
+        self._clear_transactions()
+
+    def test_sell_all(self) -> None:
+        """sell asset with amount equal to current asset amount
+
+        should create a transaction record and remove asset from portfolio
+        """
+
+        test_asset = self.asset_template
+        self._check_sell_valid_asset(test_asset)
+
+        # reset portfolio to starting state
+        self._initialize_example_portfolio()
+        self._clear_transactions()
+
+    def test_sell_over_all(self) -> None:
+        """sell more asset than current amount
+
+        should raise ValueError
+
+        should not create a transaction record
+        """
+
+        test_asset = self.asset_template
+        self._check_sell_valid_asset(test_asset)
+
+        # reset portfolio to starting state
+        self._initialize_example_portfolio()
+        self._clear_transactions()
+
+    def test_sell_empty_name(self) -> None:
+        """sell asset with empty string as name argument
+
+        should raise ValueError
+
+        should not create a transaction record
+        """
+
+        test_asset = self.asset_template
+        test_asset["name"] = ""
+
+        self._check_sell_asset_exception(test_asset, ValueError)
+
+        # reset portfolio to starting state
+        self._initialize_example_portfolio()
+        self._clear_transactions()
+
+    def test_sell_negative_unitprice(self) -> None:
+        """sell asset with negative unit price argument
+
+        should raise ValueError
+
+        should not create a transaction record
+        """
+
+        test_asset = self.asset_template
+        test_asset["unit_price"] = -1
+
+        self._check_sell_asset_exception(test_asset, ValueError)
+
+        # reset portfolio to starting state
+        self._initialize_example_portfolio()
+        self._clear_transactions()
+
+    def test_sell_negative_amount(self) -> None:
+        """sell negative amount of asset
+
+        should raise ValueError
+
+        should not create a transaction record
+        """
+
+        test_asset = self.asset_template
+        test_asset["amount"] = -10
+
+        self._check_sell_asset_exception(test_asset, ValueError)
+
+        # reset portfolio to starting state
+        self._initialize_example_portfolio()
+        self._clear_transactions()
+
+    def test_sell_empty_currency(self) -> None:
+        """sell asset with empty string as currency argument
+
+        should raise ValueError
+
+        should not create a transaction record
+        """
+
+        test_asset = self.asset_template
+        test_asset["currency"] = ""
+
+        self._check_sell_asset_exception(test_asset, ValueError)
+
+        # reset portfolio to starting state
+        self._initialize_example_portfolio()
+        self._clear_transactions()
+
+
 if __name__ == "__main__":
     unittest.main()
