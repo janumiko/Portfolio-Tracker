@@ -178,7 +178,6 @@ class TestRemoveAsset(unittest.TestCase):
         """
 
         self._check_remove_asset_exception("", 10, ValueError)
-        self._initialize_example_portfolio()
 
     def test_remove_negative_amount(self) -> None:
         """Remove negative amount of asset from portfolio.
@@ -187,7 +186,6 @@ class TestRemoveAsset(unittest.TestCase):
         """
 
         self._check_remove_asset_exception("testname", -10, ValueError)
-        self._initialize_example_portfolio()
 
     def test_remove_not_all_assets(self) -> None:
         """Remove some (not all) amount of asset from portfolio
@@ -195,7 +193,6 @@ class TestRemoveAsset(unittest.TestCase):
         Should decrease amount of asset"""
 
         self._check_remove_asset_valid("testname", self._TEST_ASSET_AMOUNT - 1)
-        self._initialize_example_portfolio()
 
     def test_remove_all_assets(self) -> None:
         """Remove whole (all) amount of asset from portfolio
@@ -203,7 +200,6 @@ class TestRemoveAsset(unittest.TestCase):
         Should remove asset from portfolio"""
 
         self._check_remove_asset_valid("testname", self._TEST_ASSET_AMOUNT)
-        self._initialize_example_portfolio()
 
 
 class TestBuyAsset(unittest.TestCase):
@@ -222,9 +218,6 @@ class TestBuyAsset(unittest.TestCase):
     @property
     def asset_template(self) -> Dict:
         return self._asset_template.copy()
-
-    def _clear_transactions(self) -> None:
-        self.portfolio_controller._portfolio._transactions = []
 
     def _check_buy_valid_asset(self, test_asset: Dict) -> None:
         """buy asset to portfolio and check if it is in portfolio assets
@@ -289,7 +282,6 @@ class TestBuyAsset(unittest.TestCase):
 
         test_asset = self.asset_template
         self._check_buy_valid_asset(test_asset)
-        self._clear_transactions()
 
     def test_buy_empty_name(self) -> None:
         """Buy asset with empty string as name
@@ -301,7 +293,6 @@ class TestBuyAsset(unittest.TestCase):
         test_asset["name"] = ""
 
         self._check_buy_asset_exception(test_asset, ValueError)
-        self._clear_transactions()
 
     def test_buy_negative_unitprice(self) -> None:
         """Buy asset with negative unit price
@@ -313,7 +304,6 @@ class TestBuyAsset(unittest.TestCase):
         test_asset["unit_price"] = -1
 
         self._check_buy_asset_exception(test_asset, ValueError)
-        self._clear_transactions()
 
     def test_buy_negative_amount(self) -> None:
         """Buy negative amount of asset
@@ -324,7 +314,6 @@ class TestBuyAsset(unittest.TestCase):
         test_asset = self.asset_template
         test_asset["amount"] = -10
         self._check_buy_asset_exception(test_asset, ValueError)
-        self._clear_transactions()
 
     def test_buy_empty_currency(self) -> None:
         """Buy an asset with empty string as currency
@@ -335,7 +324,6 @@ class TestBuyAsset(unittest.TestCase):
         test_asset = self.asset_template
         test_asset["currency"] = ""
         self._check_buy_asset_exception(test_asset, ValueError)
-        self._clear_transactions()
 
 
 class TestSellAsset(unittest.TestCase):
@@ -372,9 +360,6 @@ class TestSellAsset(unittest.TestCase):
     @property
     def asset_template(self) -> Dict:
         return self._asset_template.copy()
-
-    def _clear_transactions(self) -> None:
-        self.portfolio_controller._portfolio._transactions = []
 
     def _check_sell_valid_asset(self, test_asset) -> None:
         """Remove asset with provided arguments
@@ -443,10 +428,6 @@ class TestSellAsset(unittest.TestCase):
         test_asset["amount"] -= 1
         self._check_sell_valid_asset(test_asset)
 
-        # reset portfolio to starting state
-        self._initialize_example_portfolio()
-        self._clear_transactions()
-
     def test_sell_all(self) -> None:
         """sell asset with amount equal to current asset amount
 
@@ -455,10 +436,6 @@ class TestSellAsset(unittest.TestCase):
 
         test_asset = self.asset_template
         self._check_sell_valid_asset(test_asset)
-
-        # reset portfolio to starting state
-        self._initialize_example_portfolio()
-        self._clear_transactions()
 
     def test_sell_over_all(self) -> None:
         """sell more asset than current amount
@@ -470,10 +447,6 @@ class TestSellAsset(unittest.TestCase):
 
         test_asset = self.asset_template
         self._check_sell_valid_asset(test_asset)
-
-        # reset portfolio to starting state
-        self._initialize_example_portfolio()
-        self._clear_transactions()
 
     def test_sell_empty_name(self) -> None:
         """sell asset with empty string as name argument
@@ -488,10 +461,6 @@ class TestSellAsset(unittest.TestCase):
 
         self._check_sell_asset_exception(test_asset, ValueError)
 
-        # reset portfolio to starting state
-        self._initialize_example_portfolio()
-        self._clear_transactions()
-
     def test_sell_negative_unitprice(self) -> None:
         """sell asset with negative unit price argument
 
@@ -504,10 +473,6 @@ class TestSellAsset(unittest.TestCase):
         test_asset["unit_price"] = -1
 
         self._check_sell_asset_exception(test_asset, ValueError)
-
-        # reset portfolio to starting state
-        self._initialize_example_portfolio()
-        self._clear_transactions()
 
     def test_sell_negative_amount(self) -> None:
         """sell negative amount of asset
@@ -522,10 +487,6 @@ class TestSellAsset(unittest.TestCase):
 
         self._check_sell_asset_exception(test_asset, ValueError)
 
-        # reset portfolio to starting state
-        self._initialize_example_portfolio()
-        self._clear_transactions()
-
     def test_sell_empty_currency(self) -> None:
         """sell asset with empty string as currency argument
 
@@ -538,10 +499,6 @@ class TestSellAsset(unittest.TestCase):
         test_asset["currency"] = ""
 
         self._check_sell_asset_exception(test_asset, ValueError)
-
-        # reset portfolio to starting state
-        self._initialize_example_portfolio()
-        self._clear_transactions()
 
 
 class TestTransactionsRecords(unittest.TestCase):
@@ -648,7 +605,7 @@ class TestTransactionsRecords(unittest.TestCase):
 
         # check if older transactions have older dates
         transactions = self.portfolio_controller._portfolio._transactions
-        print(transactions)
+
         for i in range(len(transactions) - 1):
             self.assertLessEqual(
                 transactions[i]["date"], transactions[i + 1]["date"]
