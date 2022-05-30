@@ -130,5 +130,64 @@ class TestRemovePortfolio(unittest.TestCase):
         return super().tearDown()
 
 
+class TestUploadFile(unittest.TestCase):
+    def setUp(self) -> None:
+        self.TEST_DATA_PATH = "tests/test_data"
+        self.testing_path = Path(self.TEST_DATA_PATH)
+
+        # create directory if does not exist
+        self.testing_path.mkdir(exist_ok=True)
+
+        self.test_file_name = "test"
+        self.test_file_path = Path(
+            self.TEST_DATA_PATH + f"/{self.test_file_name}.json"
+        )
+
+        self.file_handler = FileHandler(self.testing_path)
+
+        # create test portfolio file
+        create_empty_portfolio(self.test_file_path)
+
+        return super().setUp()
+
+    def test_upload_file(self):
+        """upload file with provided unique valid name
+
+        should create file with provided name
+        """
+        test_name = self.test_file_name + "uploaded"
+
+        with open(self.test_file_path, "rb") as file:
+            self.file_handler.upload_portfolio(test_name, file)
+
+        self.assertTrue(
+            Path(self.TEST_DATA_PATH + f"/{test_name}.json").exists()
+        )
+
+    def test_upload_file_exists(self):
+        """upload file with provided name which exists already
+
+        should raise FileExistsError
+        """
+
+        with open(self.test_file_path, "rb") as file:
+            self.assertRaises(
+                FileExistsError,
+                self.file_handler.upload_portfolio,
+                self.test_file_name,
+                file,
+            )
+
+        self.assertTrue(
+            Path(self.TEST_DATA_PATH + f"/{self.test_file_name}.json").exists()
+        )
+
+    def tearDown(self) -> None:
+        if self.testing_path.exists():
+            rm_tree(self.testing_path)
+
+        return super().tearDown()
+
+
 if __name__ == "__main__":
     unittest.main()
