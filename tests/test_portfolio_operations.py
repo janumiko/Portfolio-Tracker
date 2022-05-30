@@ -612,5 +612,79 @@ class TestTransactionsRecords(unittest.TestCase):
             )
 
 
+class TestPortfolioBalance(unittest.TestCase):
+    def setUp(self) -> None:
+        self.portfolio_controller = PortfolioController(Path("/"), "test")
+        return super().setUp()
+
+    def _check_update_balance(
+        self, amount: int, currency: str, target_amount: int
+    ) -> None:
+        self.portfolio_controller.update_balance(amount, currency)
+        self.assertEqual(
+            self.portfolio_controller._portfolio._currencies[currency],
+            target_amount,
+        )
+
+    def test_balance_empty_name(self) -> None:
+        """update balance of empty name portfolio
+
+        should raise ValueError
+        """
+
+        test_value, test_currency = 100, ""
+        self.assertRaises(
+            ValueError,
+            self.portfolio_controller.update_balance,
+            test_value,
+            test_currency,
+        )
+
+    def test_balance_negative(self) -> None:
+        """update balance by negative amount
+
+        should decrease value
+        """
+
+        test_value, test_currency = -100, "USD"
+        self._check_update_balance(test_value, test_currency, test_value)
+
+    def test_balance_positive(self) -> None:
+        """update balance by positive amount
+
+        should increase value
+        """
+
+        test_value, test_currency = 100, "USD"
+        self._check_update_balance(test_value, test_currency, test_value)
+
+    def test_balance_zero(self) -> None:
+        """update balance by zero
+
+        should not change current value
+        """
+
+        test_value, test_currency = 0, "USD"
+        self._check_update_balance(test_value, test_currency, test_value)
+
+    def test_balance_multiple(self) -> None:
+        """update balance multiple times
+
+        should have valid amount
+        """
+
+        test_value, test_currency = 100, "USD"
+
+        for i in range(1, 100):
+            self._check_update_balance(
+                test_value, test_currency, i * test_value
+            )
+
+        for i in range(98, -100, -1):
+            self._check_update_balance(
+                -test_value, test_currency, i * test_value
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
