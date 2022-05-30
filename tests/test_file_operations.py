@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from src.controllers.file_handler import FileHandler
-from tests.utility import rm_tree
+from tests.utility import create_empty_portfolio, rm_tree
 
 
 class TestCreatePortfolio(unittest.TestCase):
@@ -76,7 +76,7 @@ class TestRemovePortfolio(unittest.TestCase):
         self.file_handler = FileHandler(self.testing_path)
 
         # create test portfolio file
-        self._create_empty_file()
+        create_empty_portfolio(self.test_file_path)
 
         # add name:path to file handler dictionary
         self.file_handler._portfolios[
@@ -84,10 +84,6 @@ class TestRemovePortfolio(unittest.TestCase):
         ] = self.test_file_path
 
         return super().setUp()
-
-    def _create_empty_file(self) -> None:
-        with open(self.test_file_path, "w", encoding="utf-8") as file:
-            file.write("")
 
     def test_remove_file(self) -> None:
         """remove existing portfolio

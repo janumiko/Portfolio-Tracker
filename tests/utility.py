@@ -1,3 +1,5 @@
+import json
+
 from pathlib import Path
 
 
@@ -10,3 +12,14 @@ def rm_tree(path: Path) -> None:
         else:
             rm_tree(child)
     path.rmdir()
+
+
+def create_empty_portfolio(path: Path) -> None:
+    empty_portfolio = {
+        "assets": {},
+        "transactions": [],
+        "currencies": {},
+        "categories": {},
+    }
+    with open(path, "w", encoding="utf-8") as file:
+        file.write(json.dumps(empty_portfolio))
