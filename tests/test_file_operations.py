@@ -5,16 +5,16 @@ from pathlib import Path
 from src.controllers.file_handler import FileHandler
 from tests.utility import create_empty_portfolio, rm_tree
 
+TEST_DATA_PATH = "tests/test_data"
+TESTING_PATH = Path(TEST_DATA_PATH)
+
 
 class TestCreatePortfolio(unittest.TestCase):
     def setUp(self) -> None:
-        self.TEST_DATA_PATH = "tests/test_data"
-        self.testing_path = Path(self.TEST_DATA_PATH)
-
         # create directory if does not exist
-        self.testing_path.mkdir(exist_ok=True)
+        TESTING_PATH.mkdir(exist_ok=True)
 
-        self.file_handler = FileHandler(self.testing_path)
+        self.file_handler = FileHandler(TESTING_PATH)
 
         return super().setUp()
 
@@ -28,9 +28,7 @@ class TestCreatePortfolio(unittest.TestCase):
         self.file_handler.create_empty_portfolio(test_portf_name)
 
         self.assertTrue(
-            Path(
-                self.TEST_DATA_PATH + "/" + test_portf_name + ".json"
-            ).is_file()
+            Path(TEST_DATA_PATH + "/" + test_portf_name + ".json").is_file()
         )
 
     def test_create_empty_name(self) -> None:
@@ -48,32 +46,27 @@ class TestCreatePortfolio(unittest.TestCase):
         )
 
         self.assertFalse(
-            Path(
-                self.TEST_DATA_PATH + "/" + test_portf_name + ".json"
-            ).is_file()
+            Path(TEST_DATA_PATH + "/" + test_portf_name + ".json").is_file()
         )
 
     def tearDown(self) -> None:
-        if self.testing_path.exists():
-            rm_tree(self.testing_path)
+        if TESTING_PATH.exists():
+            rm_tree(TESTING_PATH)
 
         return super().tearDown()
 
 
 class TestRemovePortfolio(unittest.TestCase):
     def setUp(self) -> None:
-        self.TEST_DATA_PATH = "tests/test_data"
-        self.testing_path = Path(self.TEST_DATA_PATH)
-
         # create directory if does not exist
-        self.testing_path.mkdir(exist_ok=True)
+        TESTING_PATH.mkdir(exist_ok=True)
 
         self.test_file_name = "test"
         self.test_file_path = Path(
-            self.TEST_DATA_PATH + f"/{self.test_file_name}.json"
+            TEST_DATA_PATH + f"/{self.test_file_name}.json"
         )
 
-        self.file_handler = FileHandler(self.testing_path)
+        self.file_handler = FileHandler(TESTING_PATH)
 
         # create test portfolio file
         create_empty_portfolio(self.test_file_path)
@@ -124,26 +117,23 @@ class TestRemovePortfolio(unittest.TestCase):
         self.assertTrue(self.test_file_path.exists())
 
     def tearDown(self) -> None:
-        if self.testing_path.exists():
-            rm_tree(self.testing_path)
+        if TESTING_PATH.exists():
+            rm_tree(TESTING_PATH)
 
         return super().tearDown()
 
 
 class TestUploadFile(unittest.TestCase):
     def setUp(self) -> None:
-        self.TEST_DATA_PATH = "tests/test_data"
-        self.testing_path = Path(self.TEST_DATA_PATH)
-
         # create directory if does not exist
-        self.testing_path.mkdir(exist_ok=True)
+        TESTING_PATH.mkdir(exist_ok=True)
 
         self.test_file_name = "test"
         self.test_file_path = Path(
-            self.TEST_DATA_PATH + f"/{self.test_file_name}.json"
+            TEST_DATA_PATH + f"/{self.test_file_name}.json"
         )
 
-        self.file_handler = FileHandler(self.testing_path)
+        self.file_handler = FileHandler(TESTING_PATH)
 
         # create test portfolio file
         create_empty_portfolio(self.test_file_path)
@@ -160,9 +150,7 @@ class TestUploadFile(unittest.TestCase):
         with open(self.test_file_path, "rb") as file:
             self.file_handler.upload_portfolio(test_name, file)
 
-        self.assertTrue(
-            Path(self.TEST_DATA_PATH + f"/{test_name}.json").exists()
-        )
+        self.assertTrue(Path(TEST_DATA_PATH + f"/{test_name}.json").exists())
 
     def test_upload_file_exists(self):
         """upload file with provided name which exists already
@@ -179,12 +167,12 @@ class TestUploadFile(unittest.TestCase):
             )
 
         self.assertTrue(
-            Path(self.TEST_DATA_PATH + f"/{self.test_file_name}.json").exists()
+            Path(TEST_DATA_PATH + f"/{self.test_file_name}.json").exists()
         )
 
     def tearDown(self) -> None:
-        if self.testing_path.exists():
-            rm_tree(self.testing_path)
+        if TESTING_PATH.exists():
+            rm_tree(TESTING_PATH)
 
         return super().tearDown()
 
