@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 from src.controllers.file_handler import FileHandler
+from tests.utility import rm_tree
 
 
 class TestCreatePortfolio(unittest.TestCase):
@@ -52,19 +53,9 @@ class TestCreatePortfolio(unittest.TestCase):
             ).is_file()
         )
 
-    def _rm_tree(self, path: Path) -> None:
-        """remove directory with all files inside"""
-
-        for child in path.iterdir():
-            if child.is_file():
-                child.unlink()
-            else:
-                self._rm_tree(child)
-        path.rmdir()
-
     def tearDown(self) -> None:
         if self.testing_path.exists():
-            self._rm_tree(self.testing_path)
+            rm_tree(self.testing_path)
 
         return super().tearDown()
 
@@ -97,16 +88,6 @@ class TestRemovePortfolio(unittest.TestCase):
     def _create_empty_file(self) -> None:
         with open(self.test_file_path, "w", encoding="utf-8") as file:
             file.write("")
-
-    def _rm_tree(self, path: Path) -> None:
-        """remove directory with all files inside"""
-
-        for child in path.iterdir():
-            if child.is_file():
-                child.unlink()
-            else:
-                self._rm_tree(child)
-        path.rmdir()
 
     def test_remove_file(self) -> None:
         """remove existing portfolio
@@ -148,7 +129,7 @@ class TestRemovePortfolio(unittest.TestCase):
 
     def tearDown(self) -> None:
         if self.testing_path.exists():
-            self._rm_tree(self.testing_path)
+            rm_tree(self.testing_path)
 
         return super().tearDown()
 
