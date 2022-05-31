@@ -32,19 +32,41 @@ class FileHandler:
             raise ValueError("Portfolios should be a dictionary")
 
     def check_file_name(self, name: str) -> None:
-        raise NotImplementedError
+        """check if filename is valid"""
+
+        if name == "":
+            raise ValueError("Name is empty!")
+
+        if not name.isalnum():
+            raise ValueError("Name contains not alphanumeric characters!")
 
     def add_portfolio(self, name: str, path: Path) -> None:
-        raise NotImplementedError
+        """add portfolio name and path to dictionary of"""
+
+        self._portfolios[name] = path
 
     def create_data_dir(self) -> None:
-        raise NotImplementedError
+        """create directory in data_path path"""
+
+        if not Path.is_dir(self.data_path):
+            Path.mkdir(self.data_path, parents=True)
 
     def get_portfolio_path(self, name: str) -> Optional[Path]:
-        raise NotImplementedError
+        """get portfolio Path from name string"""
+
+        if name in self.portfolios:
+            return self.portfolios[name]
+        return None
 
     def load_portfolios(self) -> None:
-        raise NotImplementedError
+        """Load portfolios from data_path directory"""
+
+        portfolio_paths = []
+        for file in self.data_path.iterdir():
+            if file.name.endswith(".json"):
+                portfolio_paths.append(file)
+
+        self.portfolios = {p.stem: p for p in portfolio_paths}
 
     def create_empty_portfolio(self, name: str) -> None:
         raise NotImplementedError
