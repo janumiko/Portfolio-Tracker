@@ -1,39 +1,82 @@
-from pathlib import Path
+import json
+
+from pathlib import PosixPath, Path
 from typing import Dict
+
+from src.models.portfolio import Portfolio
 
 
 class PortfolioController:
     def __init__(self, portfolio_path: Path, portfolio_name: str):
-        raise NotImplementedError
+        self.path = portfolio_path
+        self._portfolio = Portfolio(
+            portfolio_name,
+            {
+                "assets": {},
+                "transactions": [],
+                "currencies": {},
+                "categories": {},
+            },
+        )
+
+        if self.path.is_file():
+            self._load_file_data()
 
     @property
     def path(self) -> Path:
-        raise NotImplementedError
+        return self._path
 
     @path.setter
     def path(self, path: Path) -> None:
-        raise NotImplementedError
+        if isinstance(path, str):
+            path = Path(path)
 
-    def get_file_data(self) -> None:
-        raise NotImplementedError
+        if isinstance(path, Path) or isinstance(path, PosixPath):
+            self._path = path
+        else:
+            raise ValueError("Invalid path type!")
 
-    def save_file_data(self) -> None:
-        raise NotImplementedError
+    def _load_file_data(self) -> None:
+        """load data from file specified in controller path"""
 
-    def get_portf_name(self) -> str:
-        raise NotImplementedError
+        with open(self.path, "r") as file:
+            self._portfolio.data = json.load(file)
 
-    def get_portf_data(self) -> Dict:
-        raise NotImplementedError
+    def _save_file_data(self) -> None:
+        """save current portfolio class data
+        to json file specified in controller path"""
 
-    def get_portf_assets(self) -> Dict:
-        raise NotImplementedError
+        with open(self.path, "w") as file:
+            file.write(json.dumps(self._portfolio.data))
 
-    def get_portf_transactions(self) -> Dict:
-        raise NotImplementedError
+    @property
+    def portfolio_name(self) -> str:
+        """return name from portfolio class"""
 
-    def get_portf_currencies(self) -> Dict:
-        raise NotImplementedError
+        return self._portfolio.name
+
+    @property
+    def portfolio_data(self) -> dict:
+        """return data dictionary from portfolio class"""
+
+        return self._portfolio.data
+
+    @property
+    def portfolio_assets(self) -> dict:
+        """return assets dictionary from portfolio class"""
+
+        return self._portfolio.assets
+
+    @property
+    def portfolio_transactions(self) -> dict:
+        """return transactions dictionary from portfolio class"""
+
+        return self._portfolio.transactions
+
+    @property
+    def portfolio_currencies(self) -> dict:
+        """return currencies dictionary from portfolio class"""
+        return self._portfolio.currencies
 
     def add_asset(
         self, code: str, unit_price: float, amount: float, currency: str
