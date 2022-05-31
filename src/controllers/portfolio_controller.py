@@ -81,7 +81,29 @@ class PortfolioController:
     def add_asset(
         self, code: str, unit_price: float, amount: float, currency: str
     ) -> None:
-        raise NotImplementedError
+        """Add asset in amount and currency specified in the arguments,
+        to the portfolio"""
+
+        if (
+            code == ""
+            or currency == ""
+            or not code.isalpha()
+            or not currency.isalpha()
+            or unit_price < 0
+            or amount <= 0
+        ):
+            raise ValueError("Invalid input!")
+
+        if code in self._portfolio.assets:
+            cur_amount = self._portfolio.assets[code]["amount"]
+            amount += cur_amount
+
+        self._portfolio.assets[code] = {
+            "unit_price": unit_price,
+            "amount": amount,
+            "currency": f"{currency}",
+        }
+        self._portfolio.data["assets"] = self._portfolio.assets
 
     def remove_asset(self, code: str, amount: float) -> None:
         raise NotImplementedError
