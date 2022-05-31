@@ -3,44 +3,45 @@ from typing import List, Dict
 
 class Portfolio:
     def __init__(self, name: str, data: Dict) -> None:
-        raise NotImplementedError
+        self._name = name
+        self._data = data
 
     @property
     def name(self) -> str:
-        raise NotImplementedError
+        return self._name
 
     @name.setter
     def name(self, name: str) -> None:
-        raise NotImplementedError
+        self._name = name
 
     @property
     def data(self) -> Dict:
-        raise NotImplementedError
+        return self._data
 
     @data.setter
     def data(self, data: Dict) -> None:
-        raise NotImplementedError
+        self._data = data
 
     @property
     def assets(self) -> Dict:
-        raise NotImplementedError
+        return self.data["assets"]
 
     @assets.setter
     def assets(self, assets: Dict) -> None:
-        raise NotImplementedError
+        self.data["assets"] = assets
 
     @property
     def transactions(self) -> List[Dict]:
-        raise NotImplementedError
+        return self.data["transactions"]
 
     @transactions.setter
     def transactions(self, transactions: List[Dict]) -> None:
-        raise NotImplementedError
+        self.data["transactions"] = transactions
 
     @property
     def currencies(self) -> Dict:
-        raise NotImplementedError
+        return self.data["currencies"]
 
     @currencies.setter
     def currencies(self, currencies: Dict) -> None:
-        raise NotImplementedError
+        self.data["currencies"] = currencies
