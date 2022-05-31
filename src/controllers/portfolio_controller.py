@@ -127,12 +127,37 @@ class PortfolioController:
             self._portfolio.assets[code]["amount"] = curr_amount
 
     def update_balance(self, value: float, currency: str) -> None:
-        raise NotImplementedError
+        """decrease balance of given currency in portfolio"""
+
+        if currency is None or currency == "" or not currency.isalpha():
+            raise ValueError("Invalid currency")
+
+        if currency in self._portfolio.currencies:
+            current_value = self._portfolio.currencies[currency]
+            value += current_value
+
+        self._portfolio.currencies[currency] = value
 
     def buy_asset(
         self, code: str, unit_price: float, amount: float, currency: str
     ) -> None:
-        raise NotImplementedError
+        """add an asset to portfolio, create history record for
+        the transaction and update currency balance of the portfolio"""
+
+        self.add_asset(
+            code=code, amount=amount, unit_price=unit_price, currency=currency
+        )
+
+        self.add_transaction_record(
+            code=code,
+            amount=amount,
+            unit_price=unit_price,
+            currency=currency,
+            type="BUY",
+        )
+
+        transaction_value = unit_price * amount
+        self.update_balance(-transaction_value, currency)
 
     def sell_asset(
         self, code: str, unit_price: float, amount: float, currency: str
