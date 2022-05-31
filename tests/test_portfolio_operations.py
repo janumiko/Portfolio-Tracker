@@ -35,7 +35,7 @@ class TestAddAsset(unittest.TestCase):
             test_asset["currency"],
         )
 
-        assets = self.portfolio_controller._portfolio._assets
+        assets = self.portfolio_controller._portfolio.assets
 
         # test if test asset name in assets
         self.assertIn(test_asset["name"], assets.keys())
@@ -63,7 +63,7 @@ class TestAddAsset(unittest.TestCase):
             test_asset["currency"],
         )
 
-        assets = self.portfolio_controller._portfolio._assets
+        assets = self.portfolio_controller._portfolio.assets
 
         # check if asset was not added to assets
         self.assertNotIn(test_asset["name"], assets.keys())
@@ -231,7 +231,7 @@ class TestBuyAsset(unittest.TestCase):
             test_asset["currency"],
         )
 
-        assets = self.portfolio_controller._portfolio._assets
+        assets = self.portfolio_controller._portfolio.assets
 
         # test if test asset name in assets
         self.assertIn(test_asset["name"], assets.keys())
@@ -244,7 +244,7 @@ class TestBuyAsset(unittest.TestCase):
         self.assertEqual(asset["currency"], test_asset["currency"])
 
         self.assertEqual(
-            1, len(self.portfolio_controller._portfolio._transactions)
+            1, len(self.portfolio_controller._portfolio.transactions)
         )
 
     def _check_buy_asset_exception(
@@ -263,14 +263,14 @@ class TestBuyAsset(unittest.TestCase):
             test_asset["currency"],
         )
 
-        assets = self.portfolio_controller._portfolio._assets
+        assets = self.portfolio_controller._portfolio.assets
 
         # check if asset was not added to assets
         self.assertNotIn(test_asset["name"], assets.keys())
 
         # check if transaction record was not created
         self.assertEqual(
-            0, len(self.portfolio_controller._portfolio._transactions)
+            0, len(self.portfolio_controller._portfolio.transactions)
         )
 
     def test_buy_example(self) -> None:
@@ -392,7 +392,7 @@ class TestSellAsset(unittest.TestCase):
             )
 
         self.assertEqual(
-            1, len(self.portfolio_controller._portfolio._transactions)
+            1, len(self.portfolio_controller._portfolio.transactions)
         )
 
     def _check_sell_asset_exception(
@@ -414,7 +414,7 @@ class TestSellAsset(unittest.TestCase):
 
         # check if transaction record was not created
         self.assertEqual(
-            0, len(self.portfolio_controller._portfolio._transactions)
+            0, len(self.portfolio_controller._portfolio.transactions)
         )
 
     def test_sell_not_all(self) -> None:
@@ -528,7 +528,7 @@ class TestTransactionsRecords(unittest.TestCase):
         )
 
         # get the transaction record
-        transaction = self.portfolio_controller._portfolio._transactions[-1]
+        transaction = self.portfolio_controller._portfolio.transactions[-1]
 
         # check if transaction record is correct
         self.assertEqual(transaction["type"], transaction_type)
@@ -567,8 +567,8 @@ class TestTransactionsRecords(unittest.TestCase):
         )
 
         # check the transaction records
-        t1 = self.portfolio_controller._portfolio._transactions[-1]
-        t2 = self.portfolio_controller._portfolio._transactions[-2]
+        t1 = self.portfolio_controller._portfolio.transactions[-1]
+        t2 = self.portfolio_controller._portfolio.transactions[-2]
 
         self.assertEqual(t1["type"], transaction_types[1])
         self.assertEqual(t1["code"], asset["code"])
@@ -604,7 +604,7 @@ class TestTransactionsRecords(unittest.TestCase):
             )
 
         # check if older transactions have older dates
-        transactions = self.portfolio_controller._portfolio._transactions
+        transactions = self.portfolio_controller._portfolio.transactions
 
         for i in range(len(transactions) - 1):
             self.assertLessEqual(
@@ -622,7 +622,7 @@ class TestPortfolioBalance(unittest.TestCase):
     ) -> None:
         self.portfolio_controller.update_balance(amount, currency)
         self.assertEqual(
-            self.portfolio_controller._portfolio._currencies[currency],
+            self.portfolio_controller._portfolio.currencies[currency],
             target_amount,
         )
 
