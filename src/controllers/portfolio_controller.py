@@ -106,7 +106,25 @@ class PortfolioController:
         self._portfolio.data["assets"] = self._portfolio.assets
 
     def remove_asset(self, code: str, amount: float) -> None:
-        raise NotImplementedError
+        """remove specified amount of asset from portfolio"""
+
+        if code == "" or not code.isalpha() or amount < 0:
+            raise ValueError("Invalid input!")
+
+        if code not in self._portfolio.assets:
+            raise ValueError("Asset with that code doesn't exists.")
+
+        # if amount to remove is higher than current amount of assets
+        # remove all assets
+        curr_amount = self._portfolio.assets[code]["amount"]
+        amount_to_remove = min(curr_amount, amount)
+
+        curr_amount -= amount_to_remove
+
+        if curr_amount == 0:
+            del self._portfolio.assets[code]
+        else:
+            self._portfolio.assets[code]["amount"] = curr_amount
 
     def update_balance(self, value: float, currency: str) -> None:
         raise NotImplementedError
