@@ -109,4 +109,12 @@ class FileHandler:
         self.add_portfolio(name, portfolio_path)
 
     def remove_portfolio(self, name: str) -> None:
-        raise NotImplementedError
+        """Remove portfolio file with name specified in argument"""
+
+        self.check_file_name(name)
+        file_path = self.get_portfolio_path(name)
+        if file_path is None or not file_path.exists():
+            raise FileNotFoundError("Portfolio with that name doesn't exists!")
+
+        file_path.unlink()
+        del self.portfolios[name]
