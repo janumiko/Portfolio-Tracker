@@ -1,7 +1,7 @@
 import json
 
 from pathlib import PosixPath, Path
-from typing import Dict
+from datetime import datetime
 
 from src.models.portfolio import Portfolio
 
@@ -162,7 +162,31 @@ class PortfolioController:
     def sell_asset(
         self, code: str, unit_price: float, amount: float, currency: str
     ) -> None:
-        raise NotImplementedError
+        """remove asset from portfolio, create history record for
+        the transaction and update currency balance of the portfolio"""
+
+        if code in self._portfolio.assets:
+            if amount > self._portfolio.assets[code]["amount"]:
+                raise ValueError("Not enough assets in the portfolio to sell")
+
+        if amount <= 0 or unit_price < 0 or currency == "":
+            raise ValueError("Invalid input!")
+
+        self.remove_asset(
+            code=code,
+            amount=amount,
+        )
+
+        self.add_transaction_record(
+            code=code,
+            amount=amount,
+            unit_price=unit_price,
+            currency=currency,
+            type="SELL",
+        )
+
+        transaction_value = unit_price * amount
+        self.update_balance(transaction_value, currency)
 
     def add_transaction_record(
         self,
@@ -172,4 +196,19 @@ class PortfolioController:
         amount: float,
         currency: str,
     ) -> None:
-        raise NotImplementedError
+        """add transaction record to portfolio transactions history"""
+
+        current_date = datetime.now()
+        # change date to string in ISO 8601 format
+        date_string = current_date.strftime("%Y-%m-%dT%H:%M:%S")
+
+        transaction = {
+            "date": date_string,
+            "type": type,
+            "code": code,
+            "unit_price": unit_price,
+            "amount": amount,
+            "currency": currency,
+        }
+
+        self._portfolio.transactions.append(transaction)
