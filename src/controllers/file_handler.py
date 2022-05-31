@@ -4,23 +4,32 @@ from typing import Optional, Dict
 
 class FileHandler:
     def __init__(self, data_path: Path, portfolios: Dict = {}) -> None:
-        raise NotImplementedError
+        self.data_path = data_path
+        self.portfolios = portfolios
 
     @property
     def data_path(self) -> None:
-        raise NotImplementedError
+        return self._data_path
 
     @data_path.setter
     def data_path(self, data_path: str) -> None:
-        raise NotImplementedError
+        if isinstance(data_path, str):
+            data_path = Path(data_path)
+
+        if not data_path or data_path.stem == "":
+            raise Exception("Path cannot be empty")
+        self._data_path = data_path
 
     @property
     def portfolios(self) -> Dict:
-        raise NotImplementedError
+        return self._portfolios
 
     @portfolios.setter
     def portfolios(self, portfolios: Dict) -> None:
-        raise NotImplementedError
+        if isinstance(portfolios, dict):
+            self._portfolios = portfolios
+        else:
+            raise ValueError("Portfolios should be a dictionary")
 
     def check_file_name(self, name: str) -> None:
         raise NotImplementedError
