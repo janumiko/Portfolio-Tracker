@@ -2,6 +2,7 @@ import json
 
 from pathlib import Path
 from typing import Optional, Dict
+from streamlit.uploaded_file_manager import UploadedFile
 
 
 class FileHandler:
@@ -89,8 +90,23 @@ class FileHandler:
 
         self.add_portfolio(name, portfolio_path)
 
-    def upload_portfolio(self, name: str, portfolio_file) -> None:
-        raise NotImplementedError
+    def upload_portfolio(
+        self, name: str, portfolio_file: UploadedFile
+    ) -> None:
+        """upload portfolio to data/portfolios"""
+
+        self.check_file_name(name)
+        if portfolio_file is None:
+            raise ValueError("File is empty!")
+
+        if self.get_portfolio_path(name) is not None:
+            raise FileExistsError("Portfolio with that name already exists!")
+
+        portfolio_path = f"{self.data_path}/{name}.json"
+        with open(portfolio_path, "wb") as file:
+            file.write(portfolio_file.read())
+
+        self.add_portfolio(name, portfolio_path)
 
     def remove_portfolio(self, name: str) -> None:
         raise NotImplementedError
