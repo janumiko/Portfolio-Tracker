@@ -1,3 +1,5 @@
+import json
+
 from pathlib import Path
 from typing import Optional, Dict
 
@@ -69,7 +71,23 @@ class FileHandler:
         self.portfolios = {p.stem: p for p in portfolio_paths}
 
     def create_empty_portfolio(self, name: str) -> None:
-        raise NotImplementedError
+        """Create a new portfolio file in /data/portfolios directory"""
+
+        self.check_file_name(name)
+        if self.get_portfolio_path(name) is not None:
+            raise FileExistsError("Portfolio with that name already exists!")
+
+        portfolio_path = f"{self.data_path}/{name}.json"
+        with open(portfolio_path, "w", encoding="utf-8") as file:
+            empty_portfolio = {
+                "assets": {},
+                "transactions": [],
+                "currencies": {},
+                "categories": {},
+            }
+            file.write(json.dumps(empty_portfolio))
+
+        self.add_portfolio(name, portfolio_path)
 
     def upload_portfolio(self, name: str, portfolio_file) -> None:
         raise NotImplementedError
