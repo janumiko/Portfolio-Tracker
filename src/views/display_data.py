@@ -87,7 +87,7 @@ def display_transaction_history(**kwargs):
         transaction_type = t["type"]
         code = t["code"]
         unit_price = t["unit_price"] / 100
-        amount = t["amount"] / 100
+        amount = t["amount"]
         currency = t["currency"]
 
         st.markdown(
