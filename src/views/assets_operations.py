@@ -80,7 +80,7 @@ def display_buy_asset(**kwargs):
         )
 
         amount = st.number_input(
-            label="Input amount of assets to remove:",
+            label="Input amount of assets to buy:",
             key="amount",
             min_value=0,
             max_value=10**12,
@@ -125,7 +125,7 @@ def display_sell_asset(**kwargs):
         )
 
         amount = st.number_input(
-            label="Input amount of assets to remove:",
+            label="Input amount of assets to sell:",
             key="amount",
             min_value=0,
             max_value=10**12,
