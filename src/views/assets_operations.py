@@ -158,3 +158,59 @@ def display_sell_asset(**kwargs):
                 st.success("Sold asset")
             except (FileExistsError, FileNotFoundError, ValueError) as e:
                 st.error(e)
+
+
+def display_add_currency(**kwargs):
+    """display view for adding an currency asset"""
+
+    portfolio_contr = kwargs["portfolio_contr"]
+    with st.form(key="add_currency"):
+        currency = st.text_input(label="Input currency:", key="currency")
+
+        amount = (
+            st.number_input(
+                label="Input amount of currency to add:",
+                key="amount",
+                min_value=0.0,
+                max_value=1e12,
+                step=0.01,
+                format="%.2f",
+            )
+            * 100
+        )
+
+        if st.form_submit_button("Add currency"):
+            try:
+                portfolio_contr.update_balance(amount, currency)
+                portfolio_contr._save_file_data()
+                st.success("Sold asset")
+            except (FileExistsError, FileNotFoundError, ValueError) as e:
+                st.error(e)
+
+
+def display_remove_currency(**kwargs):
+    """display view for removing an currency asset"""
+
+    portfolio_contr = kwargs["portfolio_contr"]
+    with st.form(key="add_currency"):
+        currency = st.text_input(label="Input currency:", key="currency")
+
+        amount = (
+            st.number_input(
+                label="Input amount of currency to sell:",
+                key="amount",
+                min_value=0.0,
+                max_value=1e12,
+                step=0.01,
+                format="%.2f",
+            )
+            * 100
+        )
+
+        if st.form_submit_button("Remove currency"):
+            try:
+                portfolio_contr.update_balance(-amount, currency)
+                portfolio_contr._save_file_data()
+                st.success("Sold asset")
+            except (FileExistsError, FileNotFoundError, ValueError) as e:
+                st.error(e)
