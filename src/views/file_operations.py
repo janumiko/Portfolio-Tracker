@@ -18,6 +18,46 @@ def display_create_portfolio(**kwargs):
                 st.error(e)
 
 
+def display_download_portfolio(**kwargs):
+    """display download button for downloading portfolio"""
+
+    file_handler = kwargs["file_handler"]
+    name = kwargs["portfolio_contr"].portfolio_name
+
+    try:
+        portfolio_path = file_handler.get_portfolio_path(name)
+    except FileNotFoundError as e:
+        st.error(e)
+
+    with open(portfolio_path, "r") as file:
+        st.download_button(
+            label="Download portfolio",
+            data=file,
+            file_name=f"{name}.json",
+            mime="application/json",
+        )
+
+
+def display_upload_portfolio(**kwargs):
+    """display widgets for uploading portfolio"""
+
+    file_handler = kwargs["file_handler"]
+    with st.form(key="Upload portfolio", clear_on_submit=True):
+        name = st.text_input("Portfolio name")
+        uploaded_portfolio = st.file_uploader(
+            label="Upload portfolio in json format",
+            type=["json"],
+            accept_multiple_files=False,
+        )
+
+        if st.form_submit_button("Upload"):
+            try:
+                file_handler.upload_portfolio(name, uploaded_portfolio)
+                st.experimental_rerun()
+            except (FileExistsError, ValueError) as e:
+                st.error(e)
+
+
 def display_remove_portfolio(**kwargs):
     """display form for removing portfolio"""
 
