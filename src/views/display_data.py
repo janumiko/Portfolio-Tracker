@@ -68,3 +68,29 @@ def display_portfolio_currencies(**kwargs) -> None:
     except json.JSONDecodeError:
         st.error("Couldn't load file!")
     display_currencies(currencies)
+
+
+def display_transaction_history(**kwargs):
+    """display transaction history from portfolio"""
+
+    portfolio_contr = kwargs["portfolio_contr"]
+    try:
+        transactions = portfolio_contr.portfolio_transactions
+    except json.JSONDecodeError:
+        st.error("Couldn't load file!")
+
+    st.markdown("### Transaction records")
+    st.markdown("Type, Date, Ticker, amount, unit price, currency")
+
+    for t in reversed(transactions):
+        date = t["date"]
+        transaction_type = t["type"]
+        code = t["code"]
+        unit_price = t["unit_price"] / 100
+        amount = t["amount"] / 100
+        currency = t["currency"]
+
+        st.markdown(
+            f"{transaction_type},{date},{code},"
+            + f"{amount},{unit_price},{currency}"
+        )
