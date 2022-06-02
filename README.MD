@@ -25,7 +25,7 @@ Build `docker` image in repository
 ```
 docker build -t <your-image-name> <path-to-respository>
 ```
-You can run the bot with your image name
+Run the app with your image name on port 8501.
 ```
 docker run -d --name <container-name> -p 8501:8501 <your-image-name>
 ```
