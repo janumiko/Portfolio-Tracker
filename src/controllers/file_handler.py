@@ -102,9 +102,11 @@ class FileHandler:
         if self.get_portfolio_path(name) is not None:
             raise FileExistsError("Portfolio with that name already exists!")
 
+        data = json.load(portfolio_file)
+
         portfolio_path = f"{self.data_path}/{name}.json"
-        with open(portfolio_path, "wb") as file:
-            file.write(portfolio_file.read())
+        with open(portfolio_path, "w") as file:
+            file.write(json.dumps(data))
 
         self.add_portfolio(name, portfolio_path)
 

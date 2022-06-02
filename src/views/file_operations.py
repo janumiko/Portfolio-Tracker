@@ -1,5 +1,7 @@
 import streamlit as st
 
+from json import JSONDecodeError
+
 
 def display_create_portfolio(**kwargs):
     """display page with creation option,
@@ -54,7 +56,14 @@ def display_upload_portfolio(**kwargs):
             try:
                 file_handler.upload_portfolio(name, uploaded_portfolio)
                 st.experimental_rerun()
-            except (FileExistsError, ValueError) as e:
+            except (
+                JSONDecodeError,
+                FileNotFoundError,
+                ValueError,
+            ) as e:
+                st.error("Invalid file!")
+                st.error(e)
+            except FileExistsError as e:
                 st.error(e)
 
 
