@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 
 from typing import Dict, List
 
+from src.settings import MAX_DECIMAL
+
 
 def draw_pie_chart(codes: List, values: List) -> None:
     fig1, ax1 = plt.figure(), plt.axes()
@@ -28,10 +30,10 @@ def display_currencies(currencies: Dict) -> None:
     positive_currencies_codes = []
 
     for c in currencies:
-        st.markdown(f"{c} : {currencies[c] / 100}")
+        st.markdown(f"{c} : {currencies[c] / (10**MAX_DECIMAL)}")
 
         if currencies[c] > 0:
-            positive_currencies_values.append(currencies[c] / 100)
+            positive_currencies_values.append(currencies[c])
             positive_currencies_codes.append(c)
 
     if len(positive_currencies_values) > 0:
@@ -41,7 +43,7 @@ def display_currencies(currencies: Dict) -> None:
 def display_assets(assets: Dict) -> None:
     st.markdown("## Assets")
     for asset in assets:
-        unit_price = assets[asset]["unit_price"] / 100
+        unit_price = assets[asset]["unit_price"] / (10**MAX_DECIMAL)
         currency = assets[asset]["currency"]
         amount = assets[asset]["amount"]
 
@@ -86,7 +88,7 @@ def display_transaction_history(**kwargs):
         date = t["date"]
         transaction_type = t["type"]
         code = t["code"]
-        unit_price = t["unit_price"] / 100
+        unit_price = t["unit_price"] / (10**MAX_DECIMAL)
         amount = t["amount"]
         currency = t["currency"]
 

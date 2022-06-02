@@ -1,5 +1,7 @@
 import streamlit as st
 
+from src.settings import MAX_DECIMAL
+
 
 def display_add_asset(**kwargs):
     """Display form to add an asset"""
@@ -24,9 +26,9 @@ def display_add_asset(**kwargs):
                 key="unit_price",
                 min_value=0.0,
                 max_value=1e16,
-                format="%.2f",
+                format=f"%.{MAX_DECIMAL}f",
             )
-            * 100
+            * 10**MAX_DECIMAL
         )
         currency = st.text_input(label="Input currency:", key="currency")
 
@@ -94,9 +96,9 @@ def display_buy_asset(**kwargs):
                 min_value=0.0,
                 max_value=1e12,
                 step=0.01,
-                format="%.2f",
+                format=f"%.{MAX_DECIMAL}f",
             )
-            * 100
+            * 10**MAX_DECIMAL
         )
 
         currency = st.text_input(label="Input currency:", key="currency")
@@ -139,9 +141,9 @@ def display_sell_asset(**kwargs):
                 min_value=0.0,
                 max_value=1e12,
                 step=0.01,
-                format="%.2f",
+                format=f"%.{MAX_DECIMAL}f",
             )
-            * 100
+            * 10**MAX_DECIMAL
         )
 
         currency = st.text_input(label="Input currency:", key="currency")
@@ -174,9 +176,9 @@ def display_add_currency(**kwargs):
                 min_value=0.0,
                 max_value=1e12,
                 step=0.01,
-                format="%.2f",
+                format=f"%.{MAX_DECIMAL}f",
             )
-            * 100
+            * 10**MAX_DECIMAL
         )
 
         if st.form_submit_button("Add currency"):
@@ -202,9 +204,9 @@ def display_remove_currency(**kwargs):
                 min_value=0.0,
                 max_value=1e12,
                 step=0.01,
-                format="%.2f",
+                format=f"%.{MAX_DECIMAL}f",
             )
-            * 100
+            * 10**MAX_DECIMAL
         )
 
         if st.form_submit_button("Remove currency"):
