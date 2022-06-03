@@ -8,6 +8,8 @@ from src.settings import MAX_DECIMAL
 
 
 def draw_pie_chart(codes: List[str], values: List[int]) -> None:
+    """draws pie chart with codes as labels and given values"""
+
     fig1, ax1 = plt.figure(), plt.axes()
 
     ax1.pie(
@@ -24,6 +26,9 @@ def draw_pie_chart(codes: List[str], values: List[int]) -> None:
 
 
 def display_currencies(currencies: Dict) -> None:
+    """display list of currencies and current amounts
+    Create pie chart of currencies whose amount is positive"""
+
     st.markdown("## Currencies")
 
     positive_currencies_values = []
@@ -41,6 +46,8 @@ def display_currencies(currencies: Dict) -> None:
 
 
 def display_assets(assets: Dict) -> None:
+    """display list of assets with values per unit"""
+
     st.markdown("## Assets")
     for asset in assets:
         unit_price = assets[asset]["unit_price"] / (10**MAX_DECIMAL)
