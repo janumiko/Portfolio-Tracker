@@ -35,21 +35,21 @@ docker build -t tracker:latest .
 docker run -d --name portfolio-tracker -p 8501:8501 tracker
 ```
 
-App should be avaiable on http://localhost:8501/ in your browser.
+App should be available  on http://localhost:8501/ in your browser.
 
 ### Using Python (Linux)
 
-create virtual enviroment, for example
+create virtual environment, for example
 ```
 python3 -m venv venv
 ```
 
-enter into the virtual enviroment
+enter into the virtual environment
 ```
 . venv/bin/activate
 ```
 
-install application dependecies
+install application dependencies
 ```
 pip install -r requirements.txt
 ```
