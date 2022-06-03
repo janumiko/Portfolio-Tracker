@@ -7,12 +7,12 @@ from typing import Dict, List
 from src.settings import MAX_DECIMAL
 
 
-def draw_pie_chart(codes: List, values: List) -> None:
+def draw_pie_chart(codes: List[str], values: List[int]) -> None:
     fig1, ax1 = plt.figure(), plt.axes()
 
     ax1.pie(
-        codes,
-        labels=values,
+        values,
+        labels=codes,
         autopct="%1.1f%%",
         startangle=90,
     )
@@ -37,7 +37,7 @@ def display_currencies(currencies: Dict) -> None:
             positive_currencies_codes.append(c)
 
     if len(positive_currencies_values) > 0:
-        draw_pie_chart(positive_currencies_values, positive_currencies_codes)
+        draw_pie_chart(positive_currencies_codes, positive_currencies_values)
 
 
 def display_assets(assets: Dict) -> None:
